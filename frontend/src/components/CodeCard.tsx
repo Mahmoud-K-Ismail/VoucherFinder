@@ -26,26 +26,13 @@ export default function CodeCard({ code }: CodeCardProps) {
   const getStatusColor = () => {
     switch (code.status) {
       case 'verified':
-        return 'bg-success-100 text-success-800 border-success-300';
+        return 'bg-success-50 text-success-700 border-success-200';
       case 'unverified':
-        return 'bg-warning-100 text-warning-800 border-warning-300';
+        return 'bg-neutral-50 text-neutral-700 border-neutral-200';
       case 'expired':
-        return 'bg-danger-100 text-danger-800 border-danger-300';
+        return 'bg-accent-50 text-accent-700 border-accent-200';
       default:
-        return 'bg-slate-100 text-slate-800 border-slate-300';
-    }
-  };
-
-  const getStatusIcon = () => {
-    switch (code.status) {
-      case 'verified':
-        return '✓';
-      case 'unverified':
-        return '○';
-      case 'expired':
-        return '✗';
-      default:
-        return '?';
+        return 'bg-neutral-50 text-neutral-700 border-neutral-200';
     }
   };
 
@@ -56,85 +43,82 @@ export default function CodeCard({ code }: CodeCardProps) {
     
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    return `${Math.floor(diffDays / 30)} months ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+    return `${Math.floor(diffDays / 30)}m ago`;
+  };
+
+  const getDiscountDisplay = () => {
+    if (code.discount_percentage && code.discount_description) {
+      return `${code.discount_percentage}% off - ${code.discount_description}`;
+    }
+    if (code.discount_percentage) {
+      return `${code.discount_percentage}% off`;
+    }
+    return code.discount_description;
   };
 
   return (
-    <div className="glass-effect rounded-xl p-6 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 animate-fade-in">
-      {/* Code */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-slate-600 dark:text-slate-400">CODE:</span>
-          <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${getStatusColor()}`}>
-            {getStatusIcon()} {code.status}
-          </span>
-        </div>
-        <div className="font-mono text-2xl font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-700 rounded-lg p-3 text-center">
-          {code.code}
-        </div>
+    <div className="card p-6 border-l-4 border-l-primary-500 animate-fade-in">
+      {/* Status badge */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-xs text-neutral-500 uppercase tracking-wide font-semibold">
+          {code.source_creator || code.source}
+        </span>
+        <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor()}`}>
+          {code.status === 'verified' ? 'Verified' : code.status}
+        </span>
       </div>
 
-      {/* Discount */}
+      {/* Discount amount - prominent */}
       {(code.discount_percentage || code.discount_description) && (
-        <div className="mb-4 text-center">
-          <div className="text-lg font-semibold text-primary-600 dark:text-primary-400">
-            {code.discount_percentage && `${code.discount_percentage}% off`}
-            {code.discount_percentage && code.discount_description && ' - '}
-            {code.discount_description}
+        <div className="mb-4">
+          <div className="text-2xl font-bold text-accent-500">
+            {getDiscountDisplay()}
           </div>
         </div>
       )}
 
-      {/* Source */}
-      <div className="mb-4 space-y-2 text-sm">
-        <div className="flex items-center gap-2">
-          <span className="text-slate-600 dark:text-slate-400">Source:</span>
-          <span className="font-medium text-slate-900 dark:text-white">
-            {code.source_creator || code.source}
-          </span>
-          {code.source === 'YouTube' && <span className="text-red-600">▶</span>}
+      {/* Voucher code */}
+      <div className="mb-6">
+        <div className="font-mono text-xl font-bold text-neutral-900 bg-neutral-50 rounded-lg p-4 text-center border border-neutral-200">
+          {code.code}
         </div>
+      </div>
+
+      {/* Metadata */}
+      <div className="mb-4 flex items-center justify-between text-sm text-neutral-600">
         {code.date_found && (
-          <div className="flex items-center gap-2">
-            <span className="text-slate-600 dark:text-slate-400">Posted:</span>
-            <span className="font-medium text-slate-900 dark:text-white">
-              {formatDate(code.date_found)}
-            </span>
-          </div>
+          <span>Posted {formatDate(code.date_found)}</span>
         )}
         {code.uses_count > 0 && (
-          <div className="flex items-center gap-2">
-            <span className="text-slate-600 dark:text-slate-400">Used by:</span>
-            <span className="font-medium text-slate-900 dark:text-white">
-              {code.uses_count} {code.uses_count === 1 ? 'person' : 'people'}
-            </span>
-          </div>
+          <span>{code.uses_count} uses</span>
         )}
       </div>
 
       {/* Copy button */}
       <button
         onClick={handleCopy}
-        className={`w-full py-3 rounded-lg font-semibold transition-all transform active:scale-95 ${
+        aria-label={`Copy voucher code ${code.code}`}
+        className={`w-full py-3 rounded-lg font-semibold transition-all ${
           copied
             ? 'bg-success-500 text-white'
-            : 'bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white'
+            : 'btn-primary'
         }`}
       >
-        {copied ? '✓ Copied!' : 'Copy Code'}
+        {copied ? 'Copied!' : 'Copy Code'}
       </button>
 
-      {/* Visit source link */}
+      {/* View source link */}
       {code.source_url && (
         <a
           href={code.source_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="block mt-2 text-center text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+          aria-label={`View source for ${code.code}`}
+          className="block mt-3 text-center text-sm text-primary-600 hover:text-primary-700 transition-colors font-medium"
         >
-          View Source →
+          View Source
         </a>
       )}
     </div>

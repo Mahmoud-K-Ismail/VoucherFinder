@@ -26,19 +26,16 @@ export default function AISuggestionsCard({ suggestions }: AISuggestionsCardProp
   if (suggestions.length === 0) return null;
 
   return (
-    <div className="w-full max-w-6xl mx-auto mb-8 animate-slide-up">
-      <div className="glass-effect rounded-2xl p-6 shadow-xl border-2 border-primary-200 dark:border-primary-800 bg-gradient-to-br from-primary-50/50 to-blue-50/50 dark:from-primary-900/20 dark:to-blue-900/20">
+    <div className="w-full max-w-6xl mx-auto mb-12 animate-slide-up">
+      <div className="bg-primary-50 rounded-lg p-6 border-2 border-primary-200">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="text-4xl">💡</div>
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-              AI Suggestion: Smart Ways to Save
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Discover alternative strategies beyond just coupon codes
-            </p>
-          </div>
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-neutral-900 mb-2">
+            Smart Saving Strategies
+          </h2>
+          <p className="text-sm text-neutral-600">
+            Alternative ways to save beyond voucher codes
+          </p>
         </div>
 
         {/* Suggestions */}
@@ -46,41 +43,38 @@ export default function AISuggestionsCard({ suggestions }: AISuggestionsCardProp
           {displayedSuggestions.map((suggestion) => (
             <div
               key={suggestion.id}
-              className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-md border border-slate-200 dark:border-slate-700"
+              className="bg-white rounded-lg p-5 shadow-card border border-neutral-200"
             >
               {/* Title and Type */}
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                      {suggestion.title}
-                    </h3>
-                    <span className="px-2 py-1 text-xs font-semibold bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200 rounded-full">
-                      {suggestion.suggestion_type.replace(/_/g, ' ')}
-                    </span>
-                  </div>
+                  <h3 className="text-lg font-bold text-neutral-900 mb-2">
+                    {suggestion.title}
+                  </h3>
+                  <span className="inline-block px-3 py-1 text-xs font-semibold bg-primary-100 text-primary-700 rounded-full">
+                    {suggestion.suggestion_type.replace(/_/g, ' ')}
+                  </span>
                 </div>
                 {suggestion.risk_level === 'safe' && (
-                  <span className="text-success-600 font-semibold text-sm">✓ Safe</span>
+                  <span className="text-success-600 font-semibold text-sm whitespace-nowrap ml-2">Verified Safe</span>
                 )}
               </div>
 
               {/* Description */}
-              <p className="text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
+              <p className="text-neutral-700 mb-4 leading-relaxed">
                 {suggestion.description}
               </p>
 
               {/* Savings */}
               {suggestion.estimated_savings !== null && suggestion.estimated_savings > 0 && (
-                <div className="mb-4 p-3 bg-success-50 dark:bg-success-900/20 rounded-lg border border-success-200 dark:border-success-800">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">💰</span>
-                    <div>
-                      <div className="font-bold text-success-800 dark:text-success-200">
-                        Estimated savings: ${suggestion.estimated_savings.toFixed(2)}
-                        {suggestion.estimated_savings_description && ` (${suggestion.estimated_savings_description})`}
-                      </div>
-                    </div>
+                <div className="mb-4 p-4 bg-accent-50 rounded-lg border-l-4 border-accent-500">
+                  <div className="font-bold text-accent-600 text-lg">
+                    Save ${suggestion.estimated_savings.toFixed(2)}
+                    {suggestion.estimated_savings_description && (
+                      <span className="text-sm font-normal text-neutral-600 ml-2">
+                        {suggestion.estimated_savings_description}
+                      </span>
+                    )}
                   </div>
                 </div>
               )}
@@ -88,38 +82,33 @@ export default function AISuggestionsCard({ suggestions }: AISuggestionsCardProp
               {/* Conditions */}
               {suggestion.conditions && (
                 <div className="mb-3 text-sm">
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">Requirements: </span>
-                  <span className="text-slate-600 dark:text-slate-400">{suggestion.conditions}</span>
+                  <span className="font-semibold text-neutral-700">Requirements: </span>
+                  <span className="text-neutral-600">{suggestion.conditions}</span>
                 </div>
               )}
 
               {/* Pro Tip */}
               {suggestion.pro_tip && (
-                <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                  <div className="flex items-start gap-2">
-                    <span className="text-lg">✨</span>
-                    <div>
-                      <span className="font-semibold text-blue-800 dark:text-blue-200">Pro tip: </span>
-                      <span className="text-blue-700 dark:text-blue-300">{suggestion.pro_tip}</span>
-                    </div>
-                  </div>
+                <div className="mb-4 p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                  <span className="font-semibold text-neutral-900">Tip: </span>
+                  <span className="text-neutral-700">{suggestion.pro_tip}</span>
                 </div>
               )}
 
               {/* Verification Info */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-700">
-                <div className="text-sm text-slate-600 dark:text-slate-400">
+              <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
+                <div className="text-sm text-neutral-600">
                   {suggestion.verification_count > 0 ? (
                     <span>
-                      ✓ Verified by <strong>{suggestion.verification_count}</strong> users
+                      <strong>{suggestion.verification_count}</strong> {suggestion.verification_count === 1 ? 'person' : 'people'} verified this
                       {suggestion.confidence_score > 0 && (
-                        <span className="ml-2">
-                          • <strong>{Math.round(suggestion.confidence_score)}%</strong> confidence
+                        <span className="ml-2 text-success-600 font-medium">
+                          {Math.round(suggestion.confidence_score)}% confidence
                         </span>
                       )}
                     </span>
                   ) : (
-                    <span>Be the first to try this!</span>
+                    <span>Be the first to try this</span>
                   )}
                 </div>
 
@@ -128,20 +117,22 @@ export default function AISuggestionsCard({ suggestions }: AISuggestionsCardProp
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleVerify(suggestion.id, true)}
-                      className="px-4 py-2 text-sm font-medium bg-success-500 hover:bg-success-600 text-white rounded-lg transition-all"
+                      aria-label="Mark suggestion as worked"
+                      className="px-4 py-2 text-sm font-semibold bg-success-500 hover:bg-success-600 text-white rounded-lg transition-all"
                     >
-                      This Worked!
+                      Worked
                     </button>
                     <button
                       onClick={() => handleVerify(suggestion.id, false)}
-                      className="px-4 py-2 text-sm font-medium bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded-lg transition-all"
+                      aria-label="Mark suggestion as didn't work"
+                      className="px-4 py-2 text-sm font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-all"
                     >
                       Didn't Work
                     </button>
                   </div>
                 ) : (
                   <span className="text-success-600 font-semibold text-sm">
-                    ✓ Thanks for your feedback!
+                    Thanks for feedback!
                   </span>
                 )}
               </div>
@@ -153,9 +144,10 @@ export default function AISuggestionsCard({ suggestions }: AISuggestionsCardProp
         {suggestions.length > 3 && (
           <button
             onClick={() => setShowAll(!showAll)}
-            className="mt-4 w-full py-2 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+            aria-label={showAll ? 'Show fewer suggestions' : `Show ${suggestions.length - 3} more suggestions`}
+            className="mt-6 w-full py-3 text-sm font-semibold text-primary-600 hover:text-primary-700 bg-white rounded-lg border border-primary-200 hover:border-primary-300 transition-all"
           >
-            {showAll ? '▲ Show Less' : `▼ View ${suggestions.length - 3} More Suggestions`}
+            {showAll ? 'Show Less' : `Show ${suggestions.length - 3} More`}
           </button>
         )}
       </div>

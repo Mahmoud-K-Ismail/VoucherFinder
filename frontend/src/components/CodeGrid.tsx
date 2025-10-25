@@ -13,12 +13,12 @@ export default function CodeGrid({ codes, brandName }: CodeGridProps) {
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-          {brandName ? `Discount Codes for ${brandName}` : 'Discount Codes'}
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-neutral-900 mb-2">
+          {brandName ? `${brandName} Vouchers` : 'Vouchers'}
         </h2>
-        <p className="text-slate-600 dark:text-slate-400">
-          Found {codes.length} {codes.length === 1 ? 'code' : 'codes'} from multiple sources
+        <p className="text-neutral-600">
+          {codes.length} {codes.length === 1 ? 'code' : 'codes'} available
         </p>
       </div>
 

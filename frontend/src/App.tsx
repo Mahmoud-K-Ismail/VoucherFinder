@@ -63,41 +63,23 @@ function App() {
     <div className="min-h-screen py-8 px-4">
       {/* Header */}
       <header className="text-center mb-12">
-        <div className="mb-4">
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary-600 via-purple-600 to-primary-700 bg-clip-text text-transparent mb-3">
-            VoucherFinder
-          </h1>
-          <p className="text-xl text-slate-600 dark:text-slate-400">
-            Find the best discount codes & smart savings strategies
-          </p>
-        </div>
-        
-        {/* Value propositions */}
-        <div className="flex flex-wrap justify-center gap-4 mt-6 text-sm">
-          <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 rounded-full shadow">
-            <span className="text-green-600">✓</span>
-            <span className="text-slate-700 dark:text-slate-300">Credits Creators</span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 rounded-full shadow">
-            <span className="text-blue-600">✓</span>
-            <span className="text-slate-700 dark:text-slate-300">AI-Powered Suggestions</span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 rounded-full shadow">
-            <span className="text-purple-600">✓</span>
-            <span className="text-slate-700 dark:text-slate-300">YouTube + Coupon Sites</span>
-          </div>
-        </div>
+        <h1 className="text-5xl md:text-6xl font-bold text-neutral-900 mb-3">
+          VoucherFinder
+        </h1>
+        <p className="text-lg text-neutral-600">
+          Find discount codes and save money instantly
+        </p>
       </header>
 
       {/* Search Bar */}
-      <div className="mb-12">
+      <div className="mb-16">
         <SearchBar onSearch={handleSearch} loading={loading} />
       </div>
 
       {/* Error Message */}
       {error && (
-        <div className="max-w-2xl mx-auto mb-8 p-4 bg-danger-50 border border-danger-200 rounded-lg text-danger-800">
-          <p className="font-semibold">⚠️ {error}</p>
+        <div className="max-w-4xl mx-auto mb-8 p-4 bg-accent-50 border-l-4 border-accent-500 rounded-lg">
+          <p className="font-semibold text-accent-800">{error}</p>
         </div>
       )}
 
@@ -117,7 +99,7 @@ function App() {
             !loading && suggestions.length === 0 && (
               <EmptyState
                 brandName={brandName}
-                message="We couldn't find any discount codes for this brand yet. Check out the AI suggestions above for alternative saving strategies!"
+                message="No vouchers found for this brand yet."
               />
             )
           )}
@@ -126,58 +108,70 @@ function App() {
 
       {/* Welcome State */}
       {!hasSearched && !loading && (
-        <div className="max-w-4xl mx-auto text-center py-16">
-          <div className="glass-effect rounded-2xl p-12 shadow-xl">
-            <div className="text-6xl mb-6">🎉</div>
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
-              Welcome to VoucherFinder!
+        <div className="max-w-5xl mx-auto py-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-neutral-900 mb-4">
+              How It Works
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 mb-8">
-              Search for any brand to discover working discount codes and AI-powered saving strategies.
+            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+              Search for any brand to discover working voucher codes and smart saving strategies
             </p>
+          </div>
+          
+          {/* Features */}
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="card p-6 text-center">
+              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-neutral-900 mb-2 text-lg">
+                Multi-Source Search
+              </h3>
+              <p className="text-sm text-neutral-600">
+                Search YouTube, coupon sites, and more for the best codes
+              </p>
+            </div>
             
-            {/* Features */}
-            <div className="grid md:grid-cols-3 gap-6 text-left">
-              <div className="p-4 bg-white dark:bg-slate-800 rounded-lg">
-                <div className="text-3xl mb-3">🔍</div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
-                  Multi-Source Search
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  We search YouTube, RetailMeNot, and more to find the best codes.
-                </p>
+            <div className="card p-6 text-center">
+              <div className="w-12 h-12 bg-accent-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <svg className="w-6 h-6 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
               </div>
-              
-              <div className="p-4 bg-white dark:bg-slate-800 rounded-lg">
-                <div className="text-3xl mb-3">🤖</div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
-                  AI Suggestions
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Get smart strategies like free trials, student discounts, and more.
-                </p>
+              <h3 className="font-bold text-neutral-900 mb-2 text-lg">
+                Smart Suggestions
+              </h3>
+              <p className="text-sm text-neutral-600">
+                Get AI-powered strategies like free trials and student discounts
+              </p>
+            </div>
+            
+            <div className="card p-6 text-center">
+              <div className="w-12 h-12 bg-success-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <svg className="w-6 h-6 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-              
-              <div className="p-4 bg-white dark:bg-slate-800 rounded-lg">
-                <div className="text-3xl mb-3">✓</div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
-                  Verified Codes
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  See which codes are working and verified by other users.
-                </p>
-              </div>
+              <h3 className="font-bold text-neutral-900 mb-2 text-lg">
+                Verified Codes
+              </h3>
+              <p className="text-sm text-neutral-600">
+                See which codes work, verified by real users
+              </p>
             </div>
           </div>
         </div>
       )}
 
       {/* Footer */}
-      <footer className="mt-20 text-center text-sm text-slate-500 dark:text-slate-500">
+      <footer className="mt-24 py-6 text-center text-sm text-neutral-500 border-t border-neutral-200">
         <p>
-          Made with ❤️ for finding better deals • Credits creators ethically • 
-          <a href="https://github.com" className="ml-1 text-primary-600 hover:text-primary-700 dark:text-primary-400">
-            View on GitHub
+          Credits creators ethically
+          <span className="mx-2">•</span>
+          <a href="https://github.com" className="text-primary-600 hover:text-primary-700 transition-colors">
+            GitHub
           </a>
         </p>
       </footer>

@@ -11,7 +11,8 @@ class AISuggester:
         self.model = None
         if self.api_key:
             genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel('gemini-pro')
+            # Use gemini-2.5-flash (free tier, fast and latest)
+            self.model = genai.GenerativeModel('gemini-2.5-flash')
     
     def get_suggestions(self, brand_name: str) -> List[Dict]:
         """
@@ -30,46 +31,74 @@ class AISuggester:
         try:
             prompt = self._build_prompt(brand_name)
             
+            print(f"[AI] Generating suggestions for: {brand_name}")
             response = self.model.generate_content(prompt)
             content = response.text
+            print(f"[AI] Gemini response length: {len(content)} chars")
+            print(f"[AI] First 200 chars: {content[:200]}")
+            
             suggestions = self._parse_ai_response(content)
             
+            # If AI returned empty or failed to parse, use mock suggestions as fallback
+            if not suggestions or len(suggestions) == 0:
+                print(f"[AI] ⚠️  No valid suggestions parsed for {brand_name}, using mock data")
+                return self._get_mock_suggestions(brand_name)
+            
+            print(f"[AI] ✅ Successfully generated {len(suggestions)} AI suggestions!")
             return suggestions
         
         except Exception as e:
-            print(f"Error getting AI suggestions: {e}")
+            print(f"[AI] ❌ Error getting AI suggestions: {e}")
             return self._get_mock_suggestions(brand_name)
     
     def _build_prompt(self, brand_name: str) -> str:
         """Build prompt for AI model"""
-        return f"""You are a discount expert. For the service/product "{brand_name}", provide 3-5 legitimate ways users can get the best deals or free access.
+        return f"""You are a discount expert. For the service/product "{brand_name}", provide EXACTLY 3-5 legitimate ways users can get the best deals or free access.
 
-For each suggestion, provide:
-1. Type (e.g., "new_account_trial", "student_discount", "referral", "seasonal", "stacking")
-2. Title (e.g., "New Account Free Trial")
-3. Description - How it works (2-3 sentences)
-4. Estimated savings vs full price (e.g., "$14.99")
-5. Conditions/requirements (e.g., "must be first-time user", "requires .edu email")
-6. Pro tip for maximizing value
-7. Risk level (safe/medium/high)
+ALWAYS include these types if applicable:
+1. Free trial for new accounts
+2. Student discount (with .edu email)
+3. Family/group plan sharing
+4. Seasonal sales (Black Friday, etc.)
+5. Referral programs
 
-Format your response as valid JSON:
+For EACH suggestion, provide ALL fields:
+- type: "new_account_trial", "student_discount", "family_plan", "seasonal_sale", "referral", etc.
+- title: Short descriptive title
+- description: How it works (2-3 sentences)
+- estimated_savings: Numeric value (e.g., 14.99)
+- estimated_savings_description: Text like "$14.99 for first month" or "50% off annually"
+- conditions: Requirements (e.g., "First-time users only" or "Requires .edu email")
+- pro_tip: Extra advice to maximize savings
+- risk: ALWAYS use "safe" for legitimate strategies
+
+CRITICAL: Return ONLY valid JSON in this EXACT format (no extra text):
 {{
   "suggestions": [
     {{
       "type": "new_account_trial",
-      "title": "Create New Account",
-      "description": "...",
-      "estimated_savings": 14.99,
-      "estimated_savings_description": "$14.99 for first month",
-      "conditions": "First-time users only",
-      "pro_tip": "...",
+      "title": "Free Trial for New Users",
+      "description": "Get 30 days completely free when you sign up. Cancel anytime before trial ends.",
+      "estimated_savings": 15.99,
+      "estimated_savings_description": "$15.99 for first month",
+      "conditions": "New customers only",
+      "pro_tip": "Set a calendar reminder 2 days before trial ends",
+      "risk": "safe"
+    }},
+    {{
+      "type": "student_discount",
+      "title": "Student Discount - 50% Off",
+      "description": "Students with .edu email get 50% off. Verify through student portal.",
+      "estimated_savings": 7.99,
+      "estimated_savings_description": "$7.99/month vs $15.99 regular",
+      "conditions": "Valid .edu email required",
+      "pro_tip": "Works for recent graduates too (check eligibility period)",
       "risk": "safe"
     }}
   ]
 }}
 
-Only suggest legal, ethical strategies. Focus on official promotions, trials, student discounts, and legitimate account optimizations."""
+Only suggest legal, ethical strategies. No hacks or exploits. Focus on official promotions."""
     
     def _parse_ai_response(self, content: str) -> List[Dict]:
         """Parse AI response into structured suggestions"""
@@ -199,15 +228,46 @@ Only suggest legal, ethical strategies. Focus on official promotions, trials, st
             ]
         }
         
+        # Return brand-specific suggestions, or generic strategies that work for most services
         return mock_suggestions.get(brand_name.lower(), [
             {
-                'type': 'general',
-                'title': 'Search for Alternatives',
-                'description': f'Consider free or lower-cost alternatives to {brand_name}. Many competitors offer similar features at better prices or with free tiers.',
-                'estimated_savings': 0,
-                'estimated_savings_description': 'Varies by alternative',
-                'conditions': 'None',
-                'pro_tip': 'Research comparison sites to find the best alternative for your needs.',
+                'type': 'new_account_trial',
+                'title': 'Free Trial for New Accounts',
+                'description': f'Check if {brand_name} offers a free trial period for new users. Most services provide 7-30 days free to test their platform. Cancel before the trial ends if not satisfied.',
+                'estimated_savings': 15.00,
+                'estimated_savings_description': '$10-20 for trial period',
+                'conditions': 'New users only, credit card may be required',
+                'pro_tip': 'Set a calendar reminder 2 days before trial ends to avoid charges',
+                'risk': 'safe'
+            },
+            {
+                'type': 'student_discount',
+                'title': 'Student Discount',
+                'description': f'Many services including {brand_name} offer student discounts (typically 25-50% off) with a valid .edu email address. Check their website for student pricing.',
+                'estimated_savings': 5.00,
+                'estimated_savings_description': '25-50% off regular price',
+                'conditions': 'Valid .edu email or student ID required',
+                'pro_tip': 'Some services also offer discounts to teachers, military, and non-profits',
+                'risk': 'safe'
+            },
+            {
+                'type': 'seasonal_sale',
+                'title': 'Wait for Seasonal Sales',
+                'description': f'Look for {brand_name} during Black Friday, Cyber Monday, or end-of-year sales. Companies often offer their deepest discounts during these periods (30-70% off).',
+                'estimated_savings': 20.00,
+                'estimated_savings_description': '30-70% off during sales',
+                'conditions': 'Sales typically in November-December',
+                'pro_tip': 'Sign up for their email list to get early access to sales',
+                'risk': 'safe'
+            },
+            {
+                'type': 'referral',
+                'title': 'Referral Programs',
+                'description': f'Check if {brand_name} has a referral program. Both you and the referrer often get discounts or credits when you sign up through a referral link.',
+                'estimated_savings': 10.00,
+                'estimated_savings_description': '$5-15 credit or discount',
+                'conditions': 'Need referral link from existing user',
+                'pro_tip': 'Search online forums or social media for referral links',
                 'risk': 'safe'
             }
         ])

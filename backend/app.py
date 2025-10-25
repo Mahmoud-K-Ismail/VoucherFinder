@@ -14,10 +14,18 @@ def create_app():
     # Configuration
     app.config.from_object(Config)
     
-    # Enable CORS for frontend
+    # Enable CORS for frontend (development + production)
+    allowed_origins = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        os.getenv("FRONTEND_URL", ""),  # Production frontend URL
+    ]
+    # Remove empty strings
+    allowed_origins = [origin for origin in allowed_origins if origin]
+    
     CORS(app, resources={
         r"/api/*": {
-            "origins": ["http://localhost:3000", "http://localhost:5173"],
+            "origins": allowed_origins if allowed_origins else "*",  # Allow all if no specific origins
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type"]
         }

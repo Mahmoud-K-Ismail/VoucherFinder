@@ -15,6 +15,29 @@ if [ ! -f backend/.env ]; then
     echo ""
 fi
 
+# Check and setup Python virtual environment
+if [ ! -d "backend/venv" ]; then
+    echo "📦 Creating Python virtual environment..."
+    cd backend
+    python3 -m venv venv
+    source venv/bin/activate
+    echo "📥 Installing backend dependencies..."
+    pip install -r requirements.txt
+    cd ..
+else
+    echo "✅ Virtual environment found"
+fi
+
+# Check if frontend dependencies are installed
+if [ ! -d "frontend/node_modules" ]; then
+    echo "📥 Installing frontend dependencies..."
+    cd frontend
+    npm install
+    cd ..
+else
+    echo "✅ Frontend dependencies found"
+fi
+
 # Function to cleanup on exit
 cleanup() {
     echo ""
@@ -28,6 +51,7 @@ trap cleanup INT TERM
 # Start backend
 echo "📦 Starting backend server..."
 cd backend
+source venv/bin/activate
 python app.py &
 BACKEND_PID=$!
 cd ..

@@ -6,7 +6,7 @@ load_dotenv()
 class Config:
     """Application configuration"""
     YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', '')
-    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
+    GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
     FLASK_ENV = os.getenv('FLASK_ENV', 'development')
     DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///codes.db')
     FLASK_PORT = int(os.getenv('FLASK_PORT', 5000))

@@ -57,51 +57,46 @@ Search for "NordVPN" in the app. If you see codes with source "YouTube", it's wo
 - **"Quota exceeded"**: You've hit the 10k/day limit (unlikely for demo)
 - **No results**: The API is working, there just aren't codes for that brand
 
-## 2. OpenAI API Key (Paid - ~$5-20 for testing)
+## 2. Google Gemini API (FREE! 🎉)
 
 ### Why we need it:
-OpenAI's GPT-4 generates smart discount suggestions like "wait for Black Friday" or "use student discount" that go beyond traditional coupon codes.
+Google's Gemini AI generates smart discount suggestions like "wait for Black Friday" or "use student discount" that go beyond traditional coupon codes.
 
 ### Cost:
-- **Pay as you go** (credit card required)
-- ~$0.03 per AI suggestion generated
-- $5-10 credit should cover 100+ demo searches
-- New accounts often get $5 free credit
+- ✅ **FREE** with generous limits!
+- 60 requests per minute
+- 1,500 requests per day
+- No credit card required for free tier
+- Perfect for demos and development
 
 ### Setup Steps:
 
-#### Step 1: Create OpenAI Account
-1. Go to [platform.openai.com](https://platform.openai.com)
-2. Sign up or log in
-3. Add payment method (or use free credits if available)
+#### Step 1: Get Gemini API Key
+1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Sign in with your Google account
+3. Click "Create API Key"
+4. Select a Google Cloud project (or create new one)
+5. Copy the API key (looks like: `AIzaSyC-...`)
 
-#### Step 2: Create API Key
-1. Click your profile picture (top right)
-2. Select "API Keys"
-3. Click "Create new secret key"
-4. Name it "VoucherFinder"
-5. Copy the key (starts with `sk-...`)
-   - ⚠️ **Important**: Copy it now! You won't be able to see it again
-
-#### Step 3: Add to .env
+#### Step 2: Add to .env
 Open `backend/.env` and paste your key:
 ```env
-OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+GEMINI_API_KEY=AIzaSyC-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 ### Testing:
 Search for any brand in the app. If you see "💡 AI Suggestion: Smart Ways to Save", it's working!
 
 ### Troubleshooting:
-- **"Invalid API key"**: Make sure you copied the full key (starts with `sk-`)
-- **"Insufficient quota"**: Add credits to your OpenAI account
+- **"Invalid API key"**: Make sure you copied the full key (starts with `AIzaSy`)
+- **"Quota exceeded"**: You've hit rate limits (60/min, 1500/day)
 - **No suggestions**: Check backend logs for errors
 
-### Cost Management:
-Set usage limits in OpenAI dashboard:
-1. Go to "Usage" → "Limits"
-2. Set monthly budget (e.g., $10)
-3. You'll get email alerts when approaching limit
+### Rate Limits:
+Gemini Free Tier:
+- 60 requests per minute (RPM)
+- 1,500 requests per day (RPD)
+- More than enough for demos and small-scale usage
 
 ## Alternative: Use Mock Data (Free!)
 
@@ -120,7 +115,7 @@ Just leave the API keys blank in `.env` and search for these brands. Perfect for
 | API | Required? | Cost | Setup Time | Purpose |
 |-----|-----------|------|------------|---------|
 | YouTube Data API | Optional | Free | 5 minutes | Scrape YouTube codes |
-| OpenAI API | Optional | ~$5-20 | 3 minutes | AI suggestions |
+| Google Gemini API | Optional | Free | 3 minutes | AI suggestions |
 | Mock Data | Built-in | Free | 0 minutes | Demo without APIs |
 
 ## Quick Start Recommendations
@@ -131,7 +126,7 @@ Just leave the API keys blank in `.env` and search for these brands. Perfect for
 
 ### For Full Demo (8 minutes):
 - Set up YouTube API (5 min) - Free!
-- Set up OpenAI API (3 min) - $5-10 credit
+- Set up Gemini API (3 min) - Free!
 - Search any brand
 
 ### For Production:

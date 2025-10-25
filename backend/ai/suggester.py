@@ -1,16 +1,17 @@
 import json
 from typing import List, Dict
-from openai import OpenAI
+import google.generativeai as genai
 from config import Config
 
 class AISuggester:
-    """Generate AI-powered discount suggestions using OpenAI"""
+    """Generate AI-powered discount suggestions using Google Gemini"""
     
     def __init__(self, api_key: str = None):
-        self.api_key = api_key or Config.OPENAI_API_KEY
-        self.client = None
+        self.api_key = api_key or Config.GEMINI_API_KEY
+        self.model = None
         if self.api_key:
-            self.client = OpenAI(api_key=self.api_key)
+            genai.configure(api_key=self.api_key)
+            self.model = genai.GenerativeModel('gemini-pro')
     
     def get_suggestions(self, brand_name: str) -> List[Dict]:
         """
@@ -22,24 +23,15 @@ class AISuggester:
         Returns:
             List of suggestion dicts
         """
-        if not self.client:
-            print("Warning: OpenAI API key not configured. Returning mock suggestions.")
+        if not self.model:
+            print("Warning: Gemini API key not configured. Returning mock suggestions.")
             return self._get_mock_suggestions(brand_name)
         
         try:
             prompt = self._build_prompt(brand_name)
             
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are a discount expert who helps users find legitimate ways to save money on products and services."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,
-                max_tokens=1000
-            )
-            
-            content = response.choices[0].message.content
+            response = self.model.generate_content(prompt)
+            content = response.text
             suggestions = self._parse_ai_response(content)
             
             return suggestions
